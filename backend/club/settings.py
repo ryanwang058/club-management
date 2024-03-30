@@ -47,6 +47,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'myapi',
+    'members',
+    'trainers',
+    'rooms',
+    'classes',
+    'equipment'
 ]
 
 MIDDLEWARE = [
