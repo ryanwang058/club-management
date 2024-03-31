@@ -47,9 +47,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'club',
-    'myapi',
     'members',
     'trainers',
+    'adminstaff',
     'rooms',
     'classes',
     'equipment'
@@ -126,6 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'club.User'
 
+LOGIN_REDIRECT_URL = 'dashboard_dispatcher'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/

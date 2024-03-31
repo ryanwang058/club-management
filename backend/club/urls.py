@@ -20,12 +20,21 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('myapi.urls')),
+
     # Registration URL
     path('register/', views.register, name='register'),
+
+    # Account URL
     path('accounts/', include('django.contrib.auth.urls')),
-    path('accounts/profile/', views.profile, name='profile'),
+
+    # dashboard URL
+    path('dashboard/', views.dashboard_dispatcher, name='dashboard_dispatcher'),
+    path('dashboard/member/', views.member_dashboard, name='member_dashboard'),
+    path('dashboard/trainer/', views.trainer_dashboard, name='trainer_dashboard'),
+    path('dashboard/admin/', views.admin_dashboard, name='admin_dashboard'),
 
     # Other apps including members, trainers, rooms
-    path('members/', include('members.urls'))
+    path('members/', include('members.urls')),
+    # path('trainers/', include('trainers.urls')),
+    # path('adminstaff/', include('adminstaff.urls'))
 ]

@@ -1,12 +1,8 @@
 from django.db import models
-
-# trainers/models.py
-from django.db import models
+from django.conf import settings
 
 class Trainer(models.Model):
-  email = models.EmailField(max_length=255, unique=True)
-  first_name = models.CharField(max_length=255)
-  last_name = models.CharField(max_length=255)
+  user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='trainer')
   exercise_type = models.CharField(max_length=50)
 
   def __str__(self):

@@ -2,52 +2,66 @@
 
 from django.shortcuts import render, redirect
 from .forms import MemberRegistrationForm
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required, user_passes_test
 from members.models import Member
+from trainers.models import Trainer
+from adminstaff.models import AdminStaff
 
 
 def register(request):
   if request.method == 'POST':
     form = MemberRegistrationForm(request.POST)
     if form.is_valid():
+      user_type = form.cleaned_data.get('user_type')
       user = form.save()
-      # Create a Member instance for this user
-      Member.objects.create(
-        user=user,
-        email=user.email,
-        first_name=user.first_name,
-        last_name=user.last_name,
-      )
-      # Set the is_member flag or add the user to the Members group
-      group = Group.objects.get(name='Members') 
+      if user_type == 'member':
+        Member.objects.create(user=user)
+        group, _ = Group.objects.get_or_create(name='Members')
+      elif user_type == 'trainer':
+        Trainer.objects.create(user=user)
+        group, _ = Group.objects.get_or_create(name='Trainers')
+      else:
+        AdminStaff.objects.create(user=user)
+        group, _ = Group.objects.get_or_create(name='AdminStaff')
       user.groups.add(group)
-      user.is_member = True
       user.save()
-      # Redirect to the login page or wherever you prefer
-      return redirect('login')
+     
+      # Authenticate and login the user after successful registration
+      login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+      
+      # Redirect to a dashboard based on user type
+      return redirect('dashboard_dispatcher')
   else:
     form = MemberRegistrationForm()
   return render(request, 'registration/register.html', {'form': form})
   
-def is_trainer(user):
-  return user.groups.filter(name='Trainers').exists() or user.is_superuser
+# def is_trainer(user):
+#   return user.groups.filter(name='Trainers').exists()
 
-def is_admin_staff(user):
-  return user.is_superuser
-
-@login_required
-def profile(request):
-  return render(request, 'registration/profile.html')
+# def is_admin_staff(user):
+#   return user.groups.filter(name='AdminStaff').exists()
 
 @login_required
-@user_passes_test(is_trainer)
+def member_dashboard(request):
+  return render(request, 'dashboard/member.html')
+
+@login_required
+# @user_passes_test(is_trainer)
 def trainer_dashboard(request):
-  # Logic for trainer dashboard view
-  pass
+  return render(request, 'dashboard/trainer.html')
 
 @login_required
-@user_passes_test(is_admin_staff)
+# @user_passes_test(is_admin_staff)
 def admin_dashboard(request):
-  # Logic for admin dashboard view
-  pass
+  return render(request, 'dashboard/adminstaff.html')
+
+@login_required
+def dashboard_dispatcher(request):
+  if request.user.groups.filter(name='Trainers').exists():
+    return redirect('trainer_dashboard')
+  elif request.user.groups.filter(name='AdminStaff').exists():
+    return redirect('admin_dashboard')
+  else:
+    return redirect('member_dashboard')
