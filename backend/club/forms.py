@@ -26,9 +26,6 @@ class MemberRegistrationForm(UserCreationForm):
 
   def save(self, commit=True):
     user = super().save(commit=False)
-    # Additional user setup can go here if necessary
     if commit:
       user.save()
-      # Here you can handle creation of related models based on user type
-      # This logic might be better placed in the view to keep the form's responsibilities clear
     return user

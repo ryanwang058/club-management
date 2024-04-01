@@ -2,12 +2,19 @@
 
 from django.shortcuts import render, redirect
 from .forms import MemberRegistrationForm
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
 from django.contrib.auth.models import Group
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from members.models import Member
 from trainers.models import Trainer
 from adminstaff.models import AdminStaff
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
+
+class CustomLoginView(LoginView):
+  template_name = 'registration/login.html'
+  redirect_authenticated_user = True  # Redirect users who are already logged in
+  success_url = reverse_lazy('dashboard_dispatcher')
 
 
 def register(request):
@@ -15,7 +22,14 @@ def register(request):
     form = MemberRegistrationForm(request.POST)
     if form.is_valid():
       user_type = form.cleaned_data.get('user_type')
-      user = form.save()
+      user = form.save(commit=False)
+      if user_type == 'member':
+        user.is_member = True
+      elif user_type == 'trainer':
+        user.is_trainer = True
+      else:
+        user.is_staff = True
+      user.save()
       if user_type == 'member':
         Member.objects.create(user=user)
         group, _ = Group.objects.get_or_create(name='Members')
@@ -36,32 +50,24 @@ def register(request):
   else:
     form = MemberRegistrationForm()
   return render(request, 'registration/register.html', {'form': form})
-  
-# def is_trainer(user):
-#   return user.groups.filter(name='Trainers').exists()
-
-# def is_admin_staff(user):
-#   return user.groups.filter(name='AdminStaff').exists()
 
 @login_required
 def member_dashboard(request):
   return render(request, 'dashboard/member.html')
 
 @login_required
-# @user_passes_test(is_trainer)
 def trainer_dashboard(request):
   return render(request, 'dashboard/trainer.html')
 
 @login_required
-# @user_passes_test(is_admin_staff)
 def admin_dashboard(request):
   return render(request, 'dashboard/adminstaff.html')
 
 @login_required
 def dashboard_dispatcher(request):
   if request.user.groups.filter(name='Trainers').exists():
-    return redirect('trainer_dashboard')
+    return redirect(reverse_lazy('trainer_dashboard'))
   elif request.user.groups.filter(name='AdminStaff').exists():
-    return redirect('admin_dashboard')
+    return redirect(reverse_lazy('admin_dashboard'))
   else:
-    return redirect('member_dashboard')
+    return redirect(reverse_lazy('member_dashboard'))

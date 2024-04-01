@@ -20,8 +20,8 @@ def manage_profile(request):
         # If there were no health metrics, set the member and save
         health_metrics.member = request.user.member
       health_metrics.save()
-      # Redirect to some page (e.g., profile page) with success message
-      return redirect('profile')
+      # Redirect to previous page
+      return redirect('/dashboard/member')
   else:
     user_form = UserUpdateForm(instance=request.user)
     if hasattr(request.user.member, 'health_metrics'):

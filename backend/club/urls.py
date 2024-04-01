@@ -26,6 +26,7 @@ urlpatterns = [
 
     # Account URL
     path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/login/', views.CustomLoginView.as_view(), name='login'),
 
     # dashboard URL
     path('dashboard/', views.dashboard_dispatcher, name='dashboard_dispatcher'),

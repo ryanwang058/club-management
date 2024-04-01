@@ -82,11 +82,6 @@ CREATE TABLE Equipment (
   status VARCHAR(50)
 );
 
--- Foreign Keys
--- ALTER TABLE Payment ADD CONSTRAINT fk_payment_member_id FOREIGN KEY (member_id) REFERENCES Member(member_id);
--- ALTER TABLE Exercise ADD CONSTRAINT fk_exercise_member_id FOREIGN KEY (member_id) REFERENCES Member(member_id);
--- ALTER TABLE Class ADD CONSTRAINT fk_class_member_id FOREIGN KEY (member_id) REFERENCES Member(member_id);
--- ALTER TABLE Class ADD CONSTRAINT fk_class_trainer_id FOREIGN KEY (trainer_id) REFERENCES Trainer(trainer_id);
--- ALTER TABLE Class ADD CONSTRAINT fk_class_room_id FOREIGN KEY (room_id) REFERENCES Room(room_id);
--- ALTER TABLE TrainerAvailability ADD CONSTRAINT fk_traineravailability_trainer_id FOREIGN KEY (trainer_id) REFERENCES Trainer(trainer_id);
--- ALTER TABLE HealthMetrics ADD CONSTRAINT fk_healthmetrics_member_id FOREIGN KEY (member_id) REFERENCES Member(member_id);
+CREATE TABLE Admin_Staff (
+  admin_id SERIAL PRIMARY KEY,
+);
