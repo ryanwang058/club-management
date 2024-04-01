@@ -1,36 +1,37 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import UserUpdateForm, MemberHealthMetricsUpdateForm
+from .forms import UserUpdateForm, MemberHealthMetricsUpdateForm, FitnessGoalsFormset
+from .models import Fitness_Goals
 
 @login_required
 def manage_profile(request):
-  if request.method == 'POST':
-    user_form = UserUpdateForm(request.POST, instance=request.user)
-    # Check if the user already has health metrics
-    if hasattr(request.user.member, 'health_metrics'):
-      health_metrics_instance = request.user.member.health_metrics
-    else:
-      health_metrics_instance = None
-    health_metrics_form = MemberHealthMetricsUpdateForm(request.POST, instance=health_metrics_instance)
+  user_form = UserUpdateForm(request.POST or None, instance=request.user)
+  health_metrics_form = MemberHealthMetricsUpdateForm(request.POST or None, instance=request.user.member.health_metrics if hasattr(request.user.member, 'health_metrics') else None)
+  fitness_goals_formset = FitnessGoalsFormset(request.POST or None, queryset=Fitness_Goals.objects.filter(member=request.user.member))
 
-    if user_form.is_valid() and health_metrics_form.is_valid():
+  if request.method == 'POST':
+    if user_form.is_valid() and health_metrics_form.is_valid() and fitness_goals_formset.is_valid():
       user_form.save()
-      health_metrics = health_metrics_form.save(commit=False)  # Don't save to DB yet
-      if health_metrics_instance is None:
-        # If there were no health metrics, set the member and save
-        health_metrics.member = request.user.member
-      health_metrics.save()
-      # Redirect to previous page
+
+      # handles empty entry of health_metrics
+      health_metrics_instance = health_metrics_form.save(commit=False)
+      health_metrics_instance.member = request.user.member
+      health_metrics_instance.save()
+      health_metrics_form.save()
+
+      # handles empty entry of fitness goal
+      fitness_goals_instances = fitness_goals_formset.save(commit=False)
+      for instance in fitness_goals_instances:
+        instance.member = request.user.member
+        instance.save()
+      fitness_goals_formset.save()
+
       return redirect('/dashboard/member')
-  else:
-    user_form = UserUpdateForm(instance=request.user)
-    if hasattr(request.user.member, 'health_metrics'):
-      health_metrics_form = MemberHealthMetricsUpdateForm(instance=request.user.member.health_metrics)
-    else:
-      health_metrics_form = MemberHealthMetricsUpdateForm()
 
   context = {
     'user_form': user_form,
-    'health_metrics_form': health_metrics_form
+    'health_metrics_form': health_metrics_form,
+    'fitness_goals_formset': fitness_goals_formset,
   }
+
   return render(request, 'manage_profile.html', context)

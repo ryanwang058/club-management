@@ -3,20 +3,33 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Welcome, {{ user.first_name }}!</h2>
+<h2>Welcome member, {{ user.first_name }}!</h2>
 
 <div class="profile-info">
-  <h3>Your Profile:</h3>
+  <h3>Your Personal Information:</h3>
   <p>Email: {{ user.email }}</p>
-  <p>First Name: {{ user.first_name }}</p>
-  <p>Last Name: {{ user.last_name }}</p>
+  <p>Name: {{ user.first_name }} {{ user.last_name }}</p>
+
+  <h3>Your Health Metrics:</h3>
   <!-- Display Health Metrics if available -->
   {% if user.member.health_metrics %}
     <p>Height: {{ user.member.health_metrics.height }} cm</p>
     <p>Weight: {{ user.member.health_metrics.weight }} kg</p>
     <p>Body Fat Percentage: {{ user.member.health_metrics.bfp }}%</p>
   {% else %}
-      <p>Health metrics not available.</p>
+    <p>Health metrics not available.</p>
+  {% endif %}
+  <!-- Display Fitness Goals if available -->
+  <h3>Your Fitness Goals:</h3>
+  {% if user.member.fitness_goals_set.exists %}
+    {% for goal in user.member.fitness_goals_set.all %}
+      <div class="fitness-goal">
+        <p>Exercise Type: {{ goal.exercise_type }}</p>
+        <p>Duration: {{ goal.duration }} min</p>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>Fitness Goals not available.</p>
   {% endif %}
 </div>
 

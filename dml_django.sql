@@ -1,11 +1,20 @@
+-- Insert sample data for django settings
+
+
+
 -- Insert sample members
-INSERT INTO members_member(email, first_name, last_name)
-VALUES 
-('john.doe@cmail.ca', 'John', 'Doe'),
-('jane.smith@cmail.ca', 'Jane', 'Smith'),
-('alice.jones@cmail.ca', 'Alice', 'Jones'),
-('bob.brown@cmail.ca', 'Bob', 'Brown'),
-('charlie.black@cmail.ca', 'Charlie', 'Black');
+-- INSERT INTO members_member(email, first_name, last_name)
+-- VALUES 
+-- ('john.doe@cmail.ca', 'John', 'Doe'),
+-- ('jane.smith@cmail.ca', 'Jane', 'Smith'),
+-- ('alice.jones@cmail.ca', 'Alice', 'Jones'),
+-- ('bob.brown@cmail.ca', 'Bob', 'Brown'),
+-- ('charlie.black@cmail.ca', 'Charlie', 'Black');
+
+-- Insert sample adminstaff
+-- INSERT INTO adminstaff_adminstaff(email, first_name, last_name)
+-- VALUES
+-- ('prof.dave@admin.carleton.ca', 'Prof', 'Dave');
 
 -- Insert sample payments
 INSERT INTO members_payment(member_id, payment_type, amount, date, status)
@@ -26,10 +35,10 @@ VALUES
 (5, 'Strength', 45, '2024-03-08');
 
 -- Insert sample trainers
-INSERT INTO trainers_trainer(email, first_name, last_name, exercise_type)
-VALUES 
-('coach.mike@scs.carleton.ca', 'Mike', 'Johnson', 'Strength'),
-('coach.anna@scs.carleton.ca', 'Anna', 'Davis', 'Yoga');
+-- INSERT INTO trainers_trainer(email, first_name, last_name, exercise_type)
+-- VALUES 
+-- ('coach.mike@scs.carleton.ca', 'Mike', 'Johnson', 'Strength'),
+-- ('coach.anna@scs.carleton.ca', 'Anna', 'Davis', 'Yoga');
 
 -- Insert sample rooms
 INSERT INTO rooms_room(room_id, room_type, status)  -- Assuming 'room_id' is renamed to 'id' by Django

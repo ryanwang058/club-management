@@ -37,3 +37,11 @@ class Health_Metrics(models.Model):
 
   def __str__(self):
     return f"{self.member_id} - {self.height}cm - {self.weight}kg"
+  
+class Fitness_Goals(models.Model):
+  member = models.ForeignKey(Member, on_delete=models.CASCADE)
+  exercise_type = models.CharField(max_length=50)
+  duration = models.IntegerField()
+
+  def __str__(self):
+    return f"{self.member_id} - {self.exercise_type} - {self.duration}min"

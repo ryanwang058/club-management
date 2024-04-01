@@ -4,8 +4,18 @@
 <h2>Manage Profile</h2>
 <form method="POST">
   {% csrf_token %}
+  <h3>Personal Information</h3>
   {{ user_form.as_p }}
+  <h3>Health Metrics</h3>
   {{ health_metrics_form.as_p }}
+  <h3>Fitness Goals</h3>
+  <!-- Render Fitness Goals Formset -->
+  {{ fitness_goals_formset.management_form }}
+  {% for form in fitness_goals_formset %}
+    <div class="fitness-goal">
+      {{ form.as_p }}
+    </div>
+  {% endfor %}
   <button type="submit">Update</button>
 </form>
 {% endblock %}
