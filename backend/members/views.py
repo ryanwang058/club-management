@@ -2,11 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import UserUpdateForm, MemberHealthMetricsUpdateForm, FitnessGoalsFormset
 from .models import Fitness_Goals
+from datetime import date
+
 
 @login_required
 def manage_profile(request):
   user_form = UserUpdateForm(request.POST or None, instance=request.user)
-  health_metrics_form = MemberHealthMetricsUpdateForm(request.POST or None, instance=request.user.member.health_metrics if hasattr(request.user.member, 'health_metrics') else None)
+  # health_metrics_form = MemberHealthMetricsUpdateForm(request.POST or None, instance=request.user.member.health_metrics if hasattr(request.user.member, 'health_metrics') else None)
+  health_metrics_form = MemberHealthMetricsUpdateForm(request.POST or None)
   fitness_goals_formset = FitnessGoalsFormset(request.POST or None, queryset=Fitness_Goals.objects.filter(member=request.user.member))
 
   if request.method == 'POST':
@@ -16,8 +19,9 @@ def manage_profile(request):
       # handles empty entry of health_metrics
       health_metrics_instance = health_metrics_form.save(commit=False)
       health_metrics_instance.member = request.user.member
+      health_metrics_instance.date = date.today()  # Sets the date to today
       health_metrics_instance.save()
-      health_metrics_form.save()
+      # health_metrics_form.save()
 
       # handles empty entry of fitness goal
       fitness_goals_instances = fitness_goals_formset.save(commit=False)
@@ -35,3 +39,12 @@ def manage_profile(request):
   }
 
   return render(request, 'manage_profile.html', context)
+
+
+@login_required
+def display_dashboard(request):
+  user_form = UserUpdateForm(request.POST or None, instance=request.user)
+  context = {
+    'user_form': user_form,
+  }
+  return render(request, 'display_dashboard.html', context)

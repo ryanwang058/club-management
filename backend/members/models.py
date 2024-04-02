@@ -30,13 +30,14 @@ class Exercise(models.Model):
     return f"{self.member_id} - {self.exercise_type} - {self.date}"
 
 class Health_Metrics(models.Model):
-  member = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True)
+  member = models.ForeignKey(Member, on_delete=models.CASCADE)
   height = models.IntegerField()  # height in cm
   weight = models.DecimalField(max_digits=5, decimal_places=2)  # weight in kg
   bfp = models.DecimalField(max_digits=5, decimal_places=2)  # Body Fat Percentage
+  date = models.DateField()
 
   def __str__(self):
-    return f"{self.member_id} - {self.height}cm - {self.weight}kg"
+    return f"{self.member_id} - {self.height}cm - {self.weight}kg - {self.date}"
   
 class Fitness_Goals(models.Model):
   member = models.ForeignKey(Member, on_delete=models.CASCADE)

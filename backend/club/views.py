@@ -5,7 +5,7 @@ from .forms import MemberRegistrationForm
 from django.contrib.auth import login
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
-from members.models import Member
+from members.models import Member, Health_Metrics
 from trainers.models import Trainer
 from adminstaff.models import AdminStaff
 from django.contrib.auth.views import LoginView
@@ -53,7 +53,12 @@ def register(request):
 
 @login_required
 def member_dashboard(request):
-  return render(request, 'dashboard/member.html')
+  # Fetch the latest health metrics entry
+  latest_health_metrics = Health_Metrics.objects.filter(member=request.user.member).order_by('-date').first()
+  context = {
+    'latest_health_metrics': latest_health_metrics,
+  }
+  return render(request, 'dashboard/member.html', context)
 
 @login_required
 def trainer_dashboard(request):

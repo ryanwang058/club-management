@@ -14,6 +14,9 @@ class Trainer_Availability(models.Model):
   date = models.DateField()
   status = models.CharField(max_length=50)
 
+  class Meta:
+    unique_together = ('trainer', 'date')
+
   def __str__(self):
     return f"{self.trainer.first_name} {self.trainer.last_name} - {self.date} - {self.status}"
 

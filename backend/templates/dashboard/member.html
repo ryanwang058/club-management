@@ -10,12 +10,12 @@
   <p>Email: {{ user.email }}</p>
   <p>Name: {{ user.first_name }} {{ user.last_name }}</p>
 
-  <h3>Your Health Metrics:</h3>
-  <!-- Display Health Metrics if available -->
-  {% if user.member.health_metrics %}
-    <p>Height: {{ user.member.health_metrics.height }} cm</p>
-    <p>Weight: {{ user.member.health_metrics.weight }} kg</p>
-    <p>Body Fat Percentage: {{ user.member.health_metrics.bfp }}%</p>
+  <h3>Your Latest Health Metrics:</h3>
+  {% if latest_health_metrics %}
+    <p>As of: {{ latest_health_metrics.date }}</p>
+    <p>Height: {{ latest_health_metrics.height }} cm</p>
+    <p>Weight: {{ latest_health_metrics.weight }} kg</p>
+    <p>Body Fat Percentage: {{ latest_health_metrics.bfp }}%</p>
   {% else %}
     <p>Health metrics not available.</p>
   {% endif %}
@@ -37,7 +37,7 @@
   <h3>Actions:</h3>
   <ul>
     <li><a href="{% url 'manage_profile' %}">Manage Profile</a></li>
-    <li><a href="#">View Exercise History</a></li>
+    <li><a href="{% url 'display_dashboard' %}">Display Dashboard</a></li>
     <li><a href="#">Manage Schedule</a></li>
   </ul>
 </div>
