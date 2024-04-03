@@ -3,18 +3,37 @@
 {% block content %}
 <h2>Display Dashboard</h2>
 
-{% csrf_token %}
 <h3>Exercise Routines</h3>
-<!-- {{ user_form.as_p }} -->
+<ul>
+  {% for exercise in exercise_routines %}
+    <li>{{ exercise.exercise_type }} for {{ exercise.duration }} minutes on {{ exercise.date }}</li>
+  {% endfor %}
+</ul>
+
 <h3>Fitness Achievements</h3>
-<!-- {{ health_metrics_form.as_p }} -->
+<table>
+  <tr>
+    <th>Exercise Type | </th>
+    <th>Total Duration | </th>
+    <th>Duration Goal | </th>
+    <th>Goal Percentage</th>
+  </tr>
+  {% for achievement in achievements_data %}
+    <tr>
+      <td>{{ achievement.exercise_type }}</td>
+      <td>{{ achievement.total_duration }}</td>
+      <td>{{ achievement.duration_goal }}</td>
+      <td>{{ achievement.percentage|floatformat:2 }}%</td>
+    </tr>
+  {% endfor %}
+</table>
+
 <h3>Health Statistics</h3>
-<!-- Render Fitness Goals Formset -->
-<!-- {{ fitness_goals_formset.management_form }}
-{% for form in fitness_goals_formset %}
-  <div class="fitness-goal">
-    {{ form.as_p }}
-  </div>
-{% endfor %} -->
+{% for metric, values in health_statistics.items %}
+  <h4>{{ metric|capfirst }}</h4>
+  <p>Max: {{ values.max }} on {{ values.max_date }}</p>
+  <p>Min: {{ values.min }} on {{ values.min_date }}</p>
+  <p>Current: {{ values.current }} on {{ values.current_date }}</p>
+{% endfor %}
 
 {% endblock %}

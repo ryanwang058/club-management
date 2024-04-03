@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum, Max, Min
 from .forms import UserUpdateForm, MemberHealthMetricsUpdateForm, FitnessGoalsFormset
-from .models import Fitness_Goals
+from .models import Fitness_Goals, Exercise, Health_Metrics, Fitness_Goals
 from datetime import date
 
 
@@ -43,8 +44,57 @@ def manage_profile(request):
 
 @login_required
 def display_dashboard(request):
-  user_form = UserUpdateForm(request.POST or None, instance=request.user)
-  context = {
-    'user_form': user_form,
+  member_id = request.user.member.id  # Assuming Member model is linked to User model
+  
+  # 1. Exercise Routines
+  exercise_routines = Exercise.objects.filter(member_id=member_id).order_by('-date')
+  
+  # 2. Fitness Achievements
+  fitness_goals = Fitness_Goals.objects.filter(member_id=member_id)
+  achievements_data = []
+  for goal in fitness_goals:
+    total_duration = Exercise.objects.filter(member_id=member_id, exercise_type=goal.exercise_type).aggregate(Sum('duration'))['duration__sum'] or 0
+    percentage_completed = (total_duration / goal.duration) * 100
+    achievements_data.append({
+      'exercise_type': goal.exercise_type,
+      'total_duration': total_duration,
+      'duration_goal': goal.duration,
+      'percentage': percentage_completed,
+    })
+  
+  # 3. Health Statistics
+  health_metrics = Health_Metrics.objects.filter(member_id=member_id)
+  health_statistics = {
+    'height': {
+      'max': health_metrics.aggregate(Max('height'))['height__max'],
+      'max_date': health_metrics.order_by('-height').first().date if health_metrics.exists() else None,
+      'min': health_metrics.aggregate(Min('height'))['height__min'],
+      'min_date': health_metrics.order_by('height').first().date if health_metrics.exists() else None,
+      'current': health_metrics.latest('date').height if health_metrics.exists() else None,
+      'current_date': health_metrics.latest('date').date if health_metrics.exists() else None,
+    },
+    'weight': {
+      'max': health_metrics.aggregate(Max('weight'))['weight__max'],
+      'max_date': health_metrics.order_by('-weight').first().date if health_metrics.exists() else None,
+      'min': health_metrics.aggregate(Min('weight'))['weight__min'],
+      'min_date': health_metrics.order_by('weight').first().date if health_metrics.exists() else None,
+      'current': health_metrics.latest('date').weight if health_metrics.exists() else None,
+      'current_date': health_metrics.latest('date').date if health_metrics.exists() else None,
+    },
+    'bfp': {
+      'max': health_metrics.aggregate(Max('bfp'))['bfp__max'],
+      'max_date': health_metrics.order_by('-bfp').first().date if health_metrics.exists() else None,
+      'min': health_metrics.aggregate(Min('bfp'))['bfp__min'],
+      'min_date': health_metrics.order_by('bfp').first().date if health_metrics.exists() else None,
+      'current': health_metrics.latest('date').bfp if health_metrics.exists() else None,
+      'current_date': health_metrics.latest('date').date if health_metrics.exists() else None,
+    },
   }
+  
+  context = {
+    'exercise_routines': exercise_routines,
+    'achievements_data': achievements_data,
+    'health_statistics': health_statistics,
+  }
+  
   return render(request, 'display_dashboard.html', context)
