@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>View Member Profile</h2>
+<!-- Add a search form at the top of the view_member.html template -->
+<form method="get" action="{% url 'view_member' %}">
+  <input type="text" name="search" placeholder="Search by name" value="{{ search_query }}">
+  <button type="submit">Search</button>
+</form>
+
+<!-- Display search results -->
+{% for profile in member_profiles %}
+  <div>
+    <h4>{{ profile.name }}</h4>
+    <p>Email: {{ profile.email }}</p>
+    
+    <!-- Display Latest Health Metrics -->
+    <h5>Latest Health Metrics</h5>
+    {% if profile.health_metrics %}
+      <p>Height: {{ profile.health_metrics.height }} cm</p>
+      <p>Weight: {{ profile.health_metrics.weight }} kg</p>
+      <p>Body Fat Percentage: {{ profile.health_metrics.bfp }}%</p>
+      <p>Date: {{ profile.health_metrics.date }}</p>
+    {% else %}
+      <p>No health metrics available.</p>
+    {% endif %}
+    
+    <!-- Display Fitness Goals -->
+    <h5>Fitness Goals</h5>
+    {% if profile.fitness_goals %}
+      <ul>
+        {% for goal in profile.fitness_goals %}
+          <li>Exercise Type: {{ goal.exercise_type }}, Duration: {{ goal.duration }} minutes</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No fitness goals set.</p>
+    {% endif %}
+  </div>
+{% empty %}
+  <p>No members found.</p>
+{% endfor %}
+
+{% endblock %}

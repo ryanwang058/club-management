@@ -2,14 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Max, Min
 from .forms import UserUpdateForm, MemberHealthMetricsUpdateForm, FitnessGoalsFormset
-from .models import Fitness_Goals, Exercise, Health_Metrics, Fitness_Goals
+from .models import Member, Fitness_Goals, Exercise, Health_Metrics
 from datetime import date
 
 
 @login_required
 def manage_profile(request):
   user_form = UserUpdateForm(request.POST or None, instance=request.user)
-  # health_metrics_form = MemberHealthMetricsUpdateForm(request.POST or None, instance=request.user.member.health_metrics if hasattr(request.user.member, 'health_metrics') else None)
   health_metrics_form = MemberHealthMetricsUpdateForm(request.POST or None)
   fitness_goals_formset = FitnessGoalsFormset(request.POST or None, queryset=Fitness_Goals.objects.filter(member=request.user.member))
 
@@ -98,3 +97,27 @@ def display_dashboard(request):
   }
   
   return render(request, 'display_dashboard.html', context)
+
+@login_required
+def view_member(request):
+  search_query = request.GET.get('search', None)
+  member_profiles = []
+
+  if search_query:
+    members = Member.objects.filter(
+      user__first_name__icontains=search_query) | Member.objects.filter(user__last_name__icontains=search_query)
+  else:
+    members = Member.objects.none()  # No search query = no members
+
+  for member in members:
+    latest_health_metrics = Health_Metrics.objects.filter(member=member).order_by('-date').first()
+    fitness_goals = Fitness_Goals.objects.filter(member=member)
+    member_profiles.append({
+      'name': f"{member.user.first_name} {member.user.last_name}",
+      'email': member.user.email,
+      'health_metrics': latest_health_metrics,
+      'fitness_goals': fitness_goals,
+    })
+  
+  context = {'member_profiles': member_profiles, 'search_query': search_query}
+  return render(request, 'view_member.html', context)

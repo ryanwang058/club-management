@@ -36,6 +36,6 @@ urlpatterns = [
 
     # Other apps including members, trainers, rooms
     path('members/', include('members.urls')),
-    # path('trainers/', include('trainers.urls')),
+    path('trainers/', include('trainers.urls')),
     # path('adminstaff/', include('adminstaff.urls'))
 ]
