@@ -7,7 +7,7 @@ from .forms import UserUpdateForm, MemberHealthMetricsUpdateForm, FitnessGoalsFo
 from .models import Member, Fitness_Goals, Exercise, Health_Metrics, Payment
 from trainers.models import Trainer, Trainer_Availability
 from classes.models import Class
-from datetime import date, datetime
+from datetime import date
 
 
 @login_required
@@ -175,9 +175,9 @@ def member_manage_schedule(request):
       del request.session['trainer_sessions']
 
   return render(request, 'member_manage_schedule.html', {
-      'search_form': search_form,
-      'book_form': book_form,
-      'trainer_sessions': indexed_trainer_sessions,
+    'search_form': search_form,
+    'book_form': book_form,
+    'trainer_sessions': indexed_trainer_sessions,
   })
 
 def update_trainer_availability(trainer_id, session_date):
@@ -202,8 +202,3 @@ def create_payment_for_class(member, session_date):
     date=date.today(),
     status='Pending'  # Sets the initial payment status to "Pending"
   )
-
-@login_required
-def process_payment(request):
-  context = {}
-  return render(request, 'process_payment.html', context)

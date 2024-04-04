@@ -1,8 +1,5 @@
 from django.urls import path
-from rooms.views import manage_room
-from equipment.views import monitor_equipment
-from members.views import process_payment
-from classes.views import update_class
+from .views import process_payment, update_class, monitor_equipment, manage_room
 
 urlpatterns = [
   path('room/manage/', manage_room, name='manage_room'),
