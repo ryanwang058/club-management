@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Schedule a Training Session</h2>
+
+{% if messages %}
+<div class="messages">
+  {% for message in messages %}
+  <div{% if message.tags %} class="alert {{ message.tags }}"{% endif %}>{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<form method="get" action="">
+  {{ search_form.as_p }}
+  <button type="submit">Search</button>
+</form>
+
+{% if trainer_sessions %}
+  <h3>Available Sessions:</h3>
+  <table>
+    <tr>
+      <th>#</th>
+      <th>Trainer</th>
+      <th>Exercise Type</th>
+      <th>Date</th>
+    </tr>
+    {% for index, trainer_session in trainer_sessions %}
+      <tr>
+        <td>{{ index }}</td>
+        <td>{{ trainer_session.0.user.first_name }} {{ trainer_session.0.user.last_name }}</td>
+        <td>{{ trainer_session.0.exercise_type }}</td>
+        <td>{{ trainer_session.1 }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+  <!-- Booking Form -->
+  <form method="post" action="">
+    {% csrf_token %}
+    {{ book_form.as_p }}
+    <button type="submit">Book Session</button>
+  </form>
+{% else %}
+  <p>No trainers found for the selected session type or no session type selected.</p>
+{% endif %}
+
+{% endblock %}

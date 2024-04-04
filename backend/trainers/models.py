@@ -6,7 +6,7 @@ class Trainer(models.Model):
   exercise_type = models.CharField(max_length=50)
 
   def __str__(self):
-    return f"{self.first_name} {self.last_name} ({self.exercise_type})"
+    return f"{self.user.first_name} {self.user.last_name} ({self.exercise_type})"
 
 
 class Trainer_Availability(models.Model):

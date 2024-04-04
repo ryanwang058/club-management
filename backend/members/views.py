@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.urls import reverse
 from django.db.models import Sum, Max, Min
-from .forms import UserUpdateForm, MemberHealthMetricsUpdateForm, FitnessGoalsFormset
-from .models import Member, Fitness_Goals, Exercise, Health_Metrics
-from datetime import date
+from .forms import UserUpdateForm, MemberHealthMetricsUpdateForm, FitnessGoalsFormset, SearchTrainersForm, BookSessionForm
+from .models import Member, Fitness_Goals, Exercise, Health_Metrics, Payment
+from trainers.models import Trainer, Trainer_Availability
+from classes.models import Class
+from datetime import date, datetime
 
 
 @login_required
@@ -121,3 +125,85 @@ def view_member(request):
   
   context = {'member_profiles': member_profiles, 'search_query': search_query}
   return render(request, 'view_member.html', context)
+
+@login_required
+def member_manage_schedule(request):
+  # reset seession
+  request.session['trainer_sessions'] = []
+  search_form = SearchTrainersForm(request.GET or None)
+  book_form = BookSessionForm(request.POST or None)
+
+  # Process the search form
+  if search_form.is_valid():
+    session_type = search_form.cleaned_data.get('session_type')
+    trainer_sessions = [(trainer.id, session.date.isoformat()) for trainer in Trainer.objects.filter(exercise_type=session_type)
+                        for session in Trainer_Availability.objects.filter(trainer=trainer, status='Available', date__gte=date.today()).order_by('date')]
+    request.session['trainer_sessions'] = trainer_sessions
+
+  indexed_trainer_sessions = [(index, (Trainer.objects.get(id=trainer_id), date.fromisoformat(session_date))) for index, (trainer_id, session_date) in enumerate(request.session.get('trainer_sessions', []), start=1)]
+
+  # Process the booking form
+  if request.method == 'POST' and book_form.is_valid():
+    session_number = book_form.cleaned_data.get('session_number')
+    
+    # Ensure session_number is within the valid range
+    if 0 < session_number <= len(indexed_trainer_sessions):
+      _, (selected_trainer, selected_date) = indexed_trainer_sessions[session_number - 1]
+      member = Member.objects.get(user=request.user)
+      
+      # Create the class instance
+      Class.objects.create(
+        member=member,
+        trainer=selected_trainer,
+        date=selected_date,
+        duration=60,  # Assuming a fixed duration of 60
+        room=None  # room will be set later
+      )
+      # Update the Trainer_Availability status to "Pending"
+      update_trainer_availability(selected_trainer.id, selected_date)
+        
+      # Create a payment entry for the class
+      create_payment_for_class(member, selected_date)
+  
+      # Clear the session data to avoid re-submission
+      del request.session['trainer_sessions']
+      
+      return redirect(reverse('member_dashboard'))
+    else:
+      # notify user it's invalid input
+      messages.error(request, 'Invalid session number selected. Please choose a valid session.')
+      del request.session['trainer_sessions']
+
+  return render(request, 'member_manage_schedule.html', {
+      'search_form': search_form,
+      'book_form': book_form,
+      'trainer_sessions': indexed_trainer_sessions,
+  })
+
+def update_trainer_availability(trainer_id, session_date):
+  """
+  Updates the availability of a trainer for a specific date to "Pending".
+  """
+  try:
+    session = Trainer_Availability.objects.get(trainer_id=trainer_id, date=session_date)
+    session.status = "Pending"
+    session.save()
+  except Trainer_Availability.DoesNotExist:
+    print("Trainer availability session does not exist.")
+
+def create_payment_for_class(member, session_date):
+  """
+  Creates a payment entry for booking a class.
+  """
+  Payment.objects.create(
+    member=member,
+    payment_type='Training Class Fees',
+    amount=30.00,  # Fixed amount for training class fees for now
+    date=date.today(),
+    status='Pending'  # Sets the initial payment status to "Pending"
+  )
+
+@login_required
+def process_payment(request):
+  context = {}
+  return render(request, 'process_payment.html', context)
