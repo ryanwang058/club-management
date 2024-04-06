@@ -6,7 +6,8 @@ from members.models import Payment
 from classes.models import Class
 from trainers.models import Trainer_Availability
 from rooms.models import Room
-from .forms import ProcessPaymentForm, UpdateClassForm, ManageRoomForm
+from equipment.models import Equipment
+from .forms import ProcessPaymentForm, UpdateClassForm, ManageRoomForm, MonitorEquipmentForm
 
 @login_required
 def process_payment(request):
@@ -76,5 +77,16 @@ def manage_room(request):
 
 @login_required
 def monitor_equipment(request):
-  context = {}
+  if request.method == 'POST':
+    form = MonitorEquipmentForm(request.POST)
+    if form.is_valid():
+      equipment_id = form.cleaned_data['equipment_id']
+      equipment = Equipment.objects.get(id=equipment_id)
+      equipment.status = 'Normal'
+      equipment.save()
+      return redirect(reverse('admin_dashboard'))
+  else:
+    form = MonitorEquipmentForm()
+
+  context = {'form': form}
   return render(request, 'monitor_equipment.html', context)

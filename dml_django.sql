@@ -9,12 +9,11 @@
 -- ('jane.smith@cmail.ca', 'Jane', 'Smith'),
 -- ('alice.jones@cmail.ca', 'Alice', 'Jones'),
 -- ('bob.brown@cmail.ca', 'Bob', 'Brown'),
--- ('charlie.black@cmail.ca', 'Charlie', 'Black');
 
 -- Insert sample adminstaff
 -- INSERT INTO adminstaff_adminstaff(email, first_name, last_name)
 -- VALUES
--- ('prof.dave@admin.carleton.ca', 'Prof', 'Dave');
+-- ('admin1@gmail.com', 'Charlie', 'Black');
 
 -- Insert sample payments
 INSERT INTO members_payment(member_id, payment_type, amount, date, status)
@@ -37,8 +36,8 @@ VALUES
 -- Insert sample trainers
 -- INSERT INTO trainers_trainer(email, first_name, last_name, exercise_type)
 -- VALUES 
--- ('coach.mike@scs.carleton.ca', 'Mike', 'Johnson', 'Strength'),
--- ('coach.anna@scs.carleton.ca', 'Anna', 'Davis', 'Yoga');
+-- ('coach1@gmail.com', 'Mike', 'Johnson', 'Strength'),
+-- ('coach2@gmail.com', 'Anna', 'Davis', 'Yoga');
 
 -- Insert sample rooms
 INSERT INTO rooms_room(room_id, room_type, status)  -- Assuming 'room_id' is renamed to 'id' by Django

@@ -3,6 +3,7 @@ from django import forms
 from members.models import Payment
 from classes.models import Class
 from rooms.models import Room
+from equipment.models import Equipment
 
 class ProcessPaymentForm(forms.Form):
   payment_id = forms.ChoiceField(choices=[], label="Select Payment to Process")
@@ -37,3 +38,13 @@ class ManageRoomForm(forms.Form):
     # Populate choices with rooms that are available
     room_choices = Room.objects.filter(status='Available').values_list('room_id', 'room_type')
     self.fields['room_id'].choices = [(room[0], f"#{room[0]} - {room[1]}") for room in room_choices]
+
+class MonitorEquipmentForm(forms.Form):
+  equipment_id = forms.ChoiceField(choices=[], label="Select broken Equipment to fix")
+
+  def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
+    # Populate the choices with broken equipment
+    broken_equipment = Equipment.objects.filter(status='Broken').values_list('id', 'equipment_type')
+    choices = [(b[0], f"#{b[0]} - {b[1]}") for b in broken_equipment]
+    self.fields['equipment_id'].choices = choices
