@@ -18,10 +18,10 @@
 -- Insert sample payments
 INSERT INTO members_payment(member_id, payment_type, amount, date, status)
 VALUES 
-(1, 'Membership Fees', 49.99, '2024-03-01', 'Completed'),
+(1, 'Membership Fees', 49.99, '2024-03-01', 'Pending'),
 (2, 'Training Class Fees', 39.99, '2024-03-03', 'Completed'),
 (3, 'Membership Fees', 59.99, '2024-03-01', 'Completed'),
-(4, 'Training Class Fees', 29.99, '2024-03-04', 'Declined'),
+(4, 'Training Class Fees', 29.99, '2024-03-04', 'Pending'),
 (5, 'Membership Fees', 34.99, '2024-03-01', 'Completed');
 
 -- Insert sample exercises
@@ -36,8 +36,8 @@ VALUES
 -- Insert sample trainers
 -- INSERT INTO trainers_trainer(email, first_name, last_name, exercise_type)
 -- VALUES 
--- ('coach1@gmail.com', 'Mike', 'Johnson', 'Strength'),
--- ('coach2@gmail.com', 'Anna', 'Davis', 'Yoga');
+-- ('trainer1@gmail.com', 'Mike', 'Johnson', 'Strength'),
+-- ('trainer2@gmail.com', 'Anna', 'Davis', 'Yoga');
 
 -- Insert sample rooms
 INSERT INTO rooms_room(room_id, room_type, status)  -- Assuming 'room_id' is renamed to 'id' by Django

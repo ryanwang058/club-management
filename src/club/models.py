@@ -27,7 +27,7 @@ class User(AbstractBaseUser, PermissionsMixin):
   last_name = models.CharField(max_length=255)
   is_member = models.BooleanField(default=False)
   is_trainer = models.BooleanField(default=False)
-  is_staff = models.BooleanField(default=False)  # Required for admin login
+  is_staff = models.BooleanField(default=False)
 
   objects = CustomUserManager()
 

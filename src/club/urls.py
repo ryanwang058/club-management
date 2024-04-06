@@ -15,10 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.urls import path, include
 from . import views
 
+def root_redirect(request):
+    return redirect('register/')
+
 urlpatterns = [
+    path('', root_redirect),
     path('admin/', admin.site.urls),
 
     # Registration URL
@@ -34,7 +39,7 @@ urlpatterns = [
     path('dashboard/trainer/', views.trainer_dashboard, name='trainer_dashboard'),
     path('dashboard/admin/', views.admin_dashboard, name='admin_dashboard'),
 
-    # Other apps including members, trainers, rooms
+    # Other app urls, i.e., urls for members, trainers, adminstaff
     path('members/', include('members.urls')),
     path('trainers/', include('trainers.urls')),
     path('adminstaff/', include('adminstaff.urls'))

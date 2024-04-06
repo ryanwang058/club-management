@@ -30,7 +30,7 @@
     {% if profile.fitness_goals %}
       <ul>
         {% for goal in profile.fitness_goals %}
-          <li>Exercise Type: {{ goal.exercise_type }}, Duration: {{ goal.duration }} minutes</li>
+          <li>{{ goal.exercise_type }} - Duration: {{ goal.duration }} minutes</li>
         {% endfor %}
       </ul>
     {% else %}

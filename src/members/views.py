@@ -103,30 +103,6 @@ def display_dashboard(request):
   return render(request, 'display_dashboard.html', context)
 
 @login_required
-def view_member(request):
-  search_query = request.GET.get('search', None)
-  member_profiles = []
-
-  if search_query:
-    members = Member.objects.filter(
-      user__first_name__icontains=search_query) | Member.objects.filter(user__last_name__icontains=search_query)
-  else:
-    members = Member.objects.none()  # No search query = no members
-
-  for member in members:
-    latest_health_metrics = Health_Metrics.objects.filter(member=member).order_by('-date').first()
-    fitness_goals = Fitness_Goals.objects.filter(member=member)
-    member_profiles.append({
-      'name': f"{member.user.first_name} {member.user.last_name}",
-      'email': member.user.email,
-      'health_metrics': latest_health_metrics,
-      'fitness_goals': fitness_goals,
-    })
-  
-  context = {'member_profiles': member_profiles, 'search_query': search_query}
-  return render(request, 'view_member.html', context)
-
-@login_required
 def member_manage_schedule(request):
   # reset seession
   request.session['trainer_sessions'] = []
@@ -156,7 +132,7 @@ def member_manage_schedule(request):
         member=member,
         trainer=selected_trainer,
         date=selected_date,
-        duration=60,  # Assuming a fixed duration of 60
+        duration=60,  # a fixed duration of 60 for now
         room=None  # room will be set later
       )
       # Update the Trainer_Availability status to "Pending"
@@ -182,6 +158,7 @@ def member_manage_schedule(request):
 
 def update_trainer_availability(trainer_id, session_date):
   """
+  Helper function for member_manage_schedule
   Updates the availability of a trainer for a specific date to "Pending".
   """
   try:
@@ -193,6 +170,7 @@ def update_trainer_availability(trainer_id, session_date):
 
 def create_payment_for_class(member, session_date):
   """
+  Helper function for member_manage_schedule
   Creates a payment entry for booking a class.
   """
   Payment.objects.create(
