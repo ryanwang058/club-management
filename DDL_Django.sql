@@ -9,7 +9,7 @@
 -- $ python manage.py makemigrations
 -- $ python manage.py migrate to finish the table creation
 -- or
--- 2. run query with DML_Django.sql in PGadmin
+-- 2. run query with DML_Django.sql in pgAdmin
 
 --
 -- Create model Club
