@@ -1,3 +1,16 @@
+-- Django utilizes models to auto-generate SQL queries.
+-- These SQL lines are obtained by:
+-- First, $ python manage.py makemigrations <app_name>
+-- -- <app_name> is one of {adminstaff, classes, club, equipment, members, rooms, trainers}
+-- Then, $ python manage.py sqlmigrate <app_name> <migration_number>
+
+-- User can either use:
+-- 1.
+-- $ python manage.py makemigrations
+-- $ python manage.py migrate to finish the table creation
+-- or
+-- 2. run query with DML_Django.sql in PGadmin
+
 --
 -- Create model Club
 --
