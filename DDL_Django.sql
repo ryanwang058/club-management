@@ -4,12 +4,10 @@
 -- -- <app_name> is one of {adminstaff, classes, club, equipment, members, rooms, trainers}
 -- Then, $ python manage.py sqlmigrate <app_name> <migration_number>
 
--- User can either use:
--- 1.
+-- However, it's preferred to use 
 -- $ python manage.py makemigrations
--- $ python manage.py migrate to finish the table creation
--- or
--- 2. run query with DML_Django.sql in pgAdmin
+-- $ python manage.py migrate
+-- for the table creation because Django may modify the database when running `migrate` command, which isn't included in our queries.
 
 --
 -- Create model Club
