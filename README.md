@@ -56,11 +56,11 @@ Go to the `src` directory:
 
 3.Register or login
 
-Register page: [http://127.0.0.1:8000/register/](http://127.0.0.1:8000/register/)
+- Register page: [http://127.0.0.1:8000/register/](http://127.0.0.1:8000/register/)
 
-Login page: [http://127.0.0.1:8000/accounts/login](http://127.0.0.1:8000/accounts/login/)
+- Login page: [http://127.0.0.1:8000/accounts/login](http://127.0.0.1:8000/accounts/login/)
 
-4. Enjoy!
+4.Have fun!
 
 # Demo Link
 https://youtu.be/wTKEI2SGTyE
