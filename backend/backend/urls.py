@@ -20,6 +20,7 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
+    path('', views.CustomLoginView.as_view()),
     path('admin/', admin.site.urls),
 
     # Registration URL
@@ -38,5 +39,7 @@ urlpatterns = [
     # Other app urls, i.e., urls for members, trainers, adminstaff
     path('members/', include('members.urls')),
     path('trainers/', include('trainers.urls')),
-    path('adminstaff/', include('adminstaff.urls'))
+    path('adminstaff/', include('adminstaff.urls')),
+
+    path('api/', include('equipment.urls'))
 ]

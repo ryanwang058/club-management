@@ -19,7 +19,8 @@ const MonitorEquipment = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    axios.post('/api/equipment/fix/', { equipment_id: selectedEquipment })
+    const equipmentId = selectedEquipment;
+    axios.post(`/api/equipment/${equipmentId}/fix/`)
       .then(response => {
         setMessage('Equipment fixed successfully!');
       })
