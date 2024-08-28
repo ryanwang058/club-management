@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-%on8cm#(yu!k-%e41ry(k&vb=q%f=l$ea6klsp=e9dyk53t==i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     # add installed apps
     'rest_framework',
     'corsheaders',
-    'club',
+    'backend',
     'members',
     'trainers',
     'adminstaff',
@@ -70,7 +70,7 @@ MIDDLEWARE = [
 # Cors setting => allow cross-origin requests
 CORS_ORIGIN_ALLOW_ALL = True
 
-ROOT_URLCONF = 'club.urls'
+ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
     {
@@ -88,7 +88,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'club.wsgi.application'
+WSGI_APPLICATION = 'backend.wsgi.application'
 
 
 # Database
@@ -124,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'club.User'
+AUTH_USER_MODEL = 'backend.User'
 
 LOGIN_REDIRECT_URL = 'dashboard_dispatcher'
 
@@ -149,3 +149,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# we whitelist localhost:3000 because that's where frontend will be served
+# CORS_ORIGIN_WHITELIST = (
+#     'localhost:3000/'
+# )

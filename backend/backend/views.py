@@ -1,4 +1,4 @@
-# views.py in your main app (e.g., club)
+# views.py in your main app (e.g., backend)
 
 from django.shortcuts import render, redirect
 from .forms import MemberRegistrationForm

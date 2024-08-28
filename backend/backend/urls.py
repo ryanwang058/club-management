@@ -19,11 +19,7 @@ from django.shortcuts import redirect
 from django.urls import path, include
 from . import views
 
-def root_redirect(request):
-    return redirect('register/')
-
 urlpatterns = [
-    path('', root_redirect),
     path('admin/', admin.site.urls),
 
     # Registration URL
