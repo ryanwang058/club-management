@@ -6,8 +6,8 @@ const MonitorEquipment = () => {
   const [selectedEquipment, setSelectedEquipment] = useState('');
   const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    // Fetch the list of broken equipment from the backend
+  // Function to fetch the initial list of broken equipment
+  const fetchBrokenEquipment = () => {
     axios.get('/api/equipment/broken/')
       .then(response => {
         setEquipmentList(response.data);
@@ -15,7 +15,37 @@ const MonitorEquipment = () => {
       .catch(error => {
         console.error("There was an error fetching the equipment list!", error);
       });
+  };
+
+  useEffect(() => {
+    const socket = new WebSocket('ws://localhost:8000/ws/equipment/');
+
+    fetchBrokenEquipment()
+
+    // Handle messages received from the WebSocket
+    socket.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+      console.log(data)
+      
+      // If we receive updated broken equipment data
+      if (data.broken_equipment) {
+        console.log("EquipmentList changed")
+      }
+
+      // If an equipment item was fixed
+      if (data.fixed_equipment_id) {
+        setEquipmentList(prevList => {
+          return prevList.filter(equipment => equipment.id !== parseInt(data.fixed_equipment_id));
+        });
+      }
+    };
+
+    // Cleanup function to close WebSocket when the component is unmounted
+    return () => {
+      socket.close();
+    };
   }, []);
+
 
   const handleSubmit = (event) => {
     event.preventDefault();

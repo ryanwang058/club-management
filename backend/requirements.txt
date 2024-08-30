@@ -3,3 +3,6 @@ djangorestframework
 django-cors-headers
 psycopg[binary]
 python-dotenv
+channels
+channels_redis
+channels[daphne]
